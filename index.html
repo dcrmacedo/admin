@@ -406,12 +406,6 @@ a{text-decoration:none;color:inherit}
   .btn-sm{padding:5px 10px;font-size:.73rem}
   .btn-xs{padding:3px 8px;font-size:.68rem}
 }
-/* ════ FAB SALVAR ════ */
-.fab-save{position:fixed;bottom:28px;right:28px;z-index:400;display:none;align-items:center;gap:10px;background:var(--car);color:#fff;border:none;border-radius:50px;padding:14px 22px;font-size:.92rem;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(200,129,58,.45);transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
-.fab-save:hover{background:var(--car-d);transform:translateY(-2px);box-shadow:0 10px 32px rgba(200,129,58,.55)}
-.fab-save:active{transform:translateY(0)}
-.fab-save.show{display:flex}
-@media(max-width:620px){.fab-save{bottom:18px;right:14px;padding:13px 18px;font-size:.85rem}}
 </style>
 </head>
 <body>
@@ -428,7 +422,7 @@ a{text-decoration:none;color:inherit}
     <input type="password" class="linput" id="l-pass"  placeholder="Senha"  autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     <div class="lerr" id="lerr">E-mail ou senha incorretos.</div>
     <button class="lbtn" onclick="login()">Entrar no Painel</button>
-    <p class="lhint">Use as credenciais criadas em<br><strong>Authentication → Users</strong> no Supabase</p>
+    <p class="lhint">Use as credenciais criadas<br><strong></strong></p>
   </div>
 </div>
 
@@ -692,16 +686,13 @@ a{text-decoration:none;color:inherit}
             </div>
           </div>
         </div>
-
+        <div style="margin-top:6px">
+          <button class="btn btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Salvar Configurações</button>
+        </div>
       </div>
 
     </div><!-- /c-body -->
   </main>
-<!-- FAB SALVAR CONFIGURAÇÕES -->
-<button class="fab-save" id="fab-save" onclick="saveSettings()">
-  <i class="fa-solid fa-floppy-disk"></i> Salvar Configurações
-</button>
-
 </div><!-- /app -->
 
 <!-- PRODUCT FORM -->
@@ -792,18 +783,10 @@ a{text-decoration:none;color:inherit}
     <div class="panel-body">
       <div class="fg"><label>Título principal *</label><input id="bf-title-val" placeholder="Ex: Combo Café da Manhã"></div>
       <div class="fg"><label>Subtítulo</label><input id="bf-sub" placeholder="Ex: 2 pãezinhos + café por R$ 18,90"></div>
-      <div class="g2">
+      <div class="g3">
+        <div class="fg"><label>Emoji</label><input id="bf-emoji" placeholder="" maxlength="4"></div>
         <div class="fg"><label>Cor do fundo</label><input type="color" id="bf-bg" value="#C8813A" style="height:42px;cursor:pointer"></div>
         <div class="fg"><label>Cor do texto</label><input type="color" id="bf-color" value="#ffffff" style="height:42px;cursor:pointer"></div>
-      </div>
-      <div class="fg">
-        <label>Ícone (Font Awesome)</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <div id="bf-icon-preview" style="width:42px;height:42px;background:var(--s2);border:1.5px solid var(--brd);border-radius:var(--rad);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;color:var(--car)"><i class="fa-solid fa-tag"></i></div>
-          <input id="bf-emoji" placeholder="fa-tag" style="flex:1;background:var(--s2);border:1.5px solid var(--brd);border-radius:var(--rad);padding:10px 13px;color:var(--txt);font-size:.88rem" oninput="updateBannerIconPreview(this.value)">
-        </div>
-        <div class="fg-hint">Digite o nome do ícone sem o prefixo — ex: <strong>tag</strong>, <strong>fire</strong>, <strong>percent</strong>, <strong>bread-slice</strong>, <strong>mug-hot</strong>, <strong>cake-candles</strong>, <strong>star</strong>, <strong>gift</strong>, <strong>truck</strong></div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="bf-icon-quick"></div>
       </div>
       <div class="g2">
         <div class="fg"><label>Badge (ex: OFERTA DO DIA)</label><input id="bf-badge" placeholder="OFERTA DO DIA"></div>
@@ -1103,8 +1086,6 @@ function go(view,btn){
   if(btn)btn.classList.add('on');
   else document.querySelectorAll('.nav-item').forEach(b=>{if(b.getAttribute('onclick')?.includes(`'${view}'`))b.classList.add('on');});
   document.getElementById('page-title').textContent=pageTitles[view]||view;
-  const fab=document.getElementById('fab-save');
-  if(fab) fab.classList.toggle('show', view==='settings');
 }
 
 /* ═══ FORMAT ═══ */
@@ -1390,7 +1371,7 @@ function renderBannersAdmin(){
   if(!banners.length){el.innerHTML='<div class="empty-s"><div class="ei"><i class="fa-solid fa-rectangle-ad"></i></div><p>Nenhum banner criado.</p></div>';return;}
   el.innerHTML=banners.map(b=>`
     <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--s2);border:1px solid var(--brd);border-radius:12px;margin-bottom:10px">
-      <div style="width:52px;height:52px;border-radius:12px;background:${b.bg_color||'var(--car)'};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;color:${b.text_color||'#fff'}"><i class="fa-solid fa-${b.emoji||'tag'}"></i></div>
+      <div style="width:52px;height:52px;border-radius:12px;background:${b.bg_color||'var(--car)'};display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0">${b.emoji||'<i class="fa-solid fa-tag" style="color:#fff;font-size:1.4rem"></i>'}</div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:600;color:var(--txt);font-size:.88rem">${b.title}</div>
         ${b.subtitle?`<div style="font-size:.76rem;color:var(--txt3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b.subtitle}</div>`:''}
@@ -1407,25 +1388,12 @@ function renderBannersAdmin(){
     </div>`).join('');
 }
 
-const BF_ICONS=['tag','fire','percent','bread-slice','mug-hot','cake-candles','star','gift','truck','bolt','heart','crown','leaf','basket-shopping','clock','bell','ribbon','handshake','thumbs-up','seedling'];
-function updateBannerIconPreview(val){
-  const name=(val||'tag').replace(/^fa-/,'');
-  document.getElementById('bf-icon-preview').innerHTML=`<i class="fa-solid fa-${name}"></i>`;
-}
-function renderBannerIconQuick(){
-  const el=document.getElementById('bf-icon-quick');
-  if(!el)return;
-  el.innerHTML=BF_ICONS.map(ic=>`<button type="button" title="${ic}" onclick="document.getElementById('bf-emoji').value='${ic}';updateBannerIconPreview('${ic}')" style="width:34px;height:34px;background:var(--s2);border:1.5px solid var(--brd);border-radius:8px;cursor:pointer;color:var(--txt2);font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:var(--trans)" onmouseover="this.style.borderColor='var(--car)';this.style.color='var(--car)'" onmouseout="this.style.borderColor='var(--brd)';this.style.color='var(--txt2)'"><i class="fa-solid fa-${ic}"></i></button>`).join('');
-}
 function openBannerForm(id){
   editBannerId=id; const b=id?banners.find(x=>x.id===id):null;
   document.getElementById('bf-title').textContent=b?' Editar Banner':'＋ Novo Banner';
   document.getElementById('bf-title-val').value=b?.title||'';
   document.getElementById('bf-sub').value=b?.subtitle||'';
-  const iconVal=(b?.emoji||'tag').replace(/^fa-/,'');
-  document.getElementById('bf-emoji').value=iconVal;
-  updateBannerIconPreview(iconVal);
-  renderBannerIconQuick();
+  document.getElementById('bf-emoji').value=b?.emoji||'';
   document.getElementById('bf-bg').value=b?.bg_color||'#C8813A';
   document.getElementById('bf-color').value=b?.text_color||'#ffffff';
   document.getElementById('bf-badge').value=b?.badge_label||'';
