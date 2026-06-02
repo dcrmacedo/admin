@@ -406,6 +406,12 @@ a{text-decoration:none;color:inherit}
   .btn-sm{padding:5px 10px;font-size:.73rem}
   .btn-xs{padding:3px 8px;font-size:.68rem}
 }
+/* ════ FAB SALVAR ════ */
+.fab-save{position:fixed;bottom:28px;right:28px;z-index:400;display:none;align-items:center;gap:10px;background:var(--car);color:#fff;border:none;border-radius:50px;padding:14px 22px;font-size:.92rem;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(200,129,58,.45);transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.fab-save:hover{background:var(--car-d);transform:translateY(-2px);box-shadow:0 10px 32px rgba(200,129,58,.55)}
+.fab-save:active{transform:translateY(0)}
+.fab-save.show{display:flex}
+@media(max-width:620px){.fab-save{bottom:18px;right:14px;padding:13px 18px;font-size:.85rem}}
 </style>
 </head>
 <body>
@@ -686,13 +692,16 @@ a{text-decoration:none;color:inherit}
             </div>
           </div>
         </div>
-        <div style="margin-top:6px">
-          <button class="btn btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Salvar Configurações</button>
-        </div>
+
       </div>
 
     </div><!-- /c-body -->
   </main>
+<!-- FAB SALVAR CONFIGURAÇÕES -->
+<button class="fab-save" id="fab-save" onclick="saveSettings()">
+  <i class="fa-solid fa-floppy-disk"></i> Salvar Configurações
+</button>
+
 </div><!-- /app -->
 
 <!-- PRODUCT FORM -->
@@ -1094,6 +1103,8 @@ function go(view,btn){
   if(btn)btn.classList.add('on');
   else document.querySelectorAll('.nav-item').forEach(b=>{if(b.getAttribute('onclick')?.includes(`'${view}'`))b.classList.add('on');});
   document.getElementById('page-title').textContent=pageTitles[view]||view;
+  const fab=document.getElementById('fab-save');
+  if(fab) fab.classList.toggle('show', view==='settings');
 }
 
 /* ═══ FORMAT ═══ */
