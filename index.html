@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin · Panificadora dos Sonhos</title>
+<title>Admin · Panificadora </title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1524,8 +1524,8 @@ async function saveSettings(){
     delivery_fee_enabled:feeEnabled,
     delivery_fee_value:parseFloat(document.getElementById('st-fee-value').value)||0,
     delivery_fee_free_default:feeDefaultFree,
-    delivery_free_zones:document.getElementById('st-free-zones').value.trim(),
-    delivery_paid_zones:document.getElementById('st-paid-zones').value.trim(),
+    delivery_free_zones:document.getElementById('st-free-zones').value.split(/[,\n]/).map(z=>z.trim()).filter(Boolean).join(', '),
+    delivery_paid_zones:document.getElementById('st-paid-zones').value.split(/[,\n]/).map(z=>z.trim()).filter(Boolean).join(', '),
     updated_at:new Date().toISOString()};
   const{error}=await sb.from('store_settings').upsert({id:1,...payload});
   if(error){toast('Erro: '+error.message,'err');return;}
