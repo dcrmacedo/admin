@@ -269,6 +269,20 @@ a{text-decoration:none;color:inherit}
 .lbox-counter{font-size:.77rem;color:var(--txt3);min-width:50px;text-align:center}
 .lbox-name{font-size:.88rem;color:var(--txt2);margin-top:6px;font-weight:600}
 
+/* ════ VARIAÇÕES ════ */
+.var-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.var-row{display:grid;grid-template-columns:1fr 90px 70px auto;gap:7px;align-items:center}
+.var-row input{background:var(--s2);border:1.5px solid var(--brd);border-radius:var(--rad);padding:8px 11px;color:var(--txt);font-size:.84rem;transition:var(--trans);width:100%}
+.var-row input:focus{outline:none;border-color:var(--car)}
+.var-row input::placeholder{color:var(--txt4)}
+.var-row-labels{display:grid;grid-template-columns:1fr 90px 70px auto;gap:7px;margin-top:8px}
+.var-row-labels span{font-size:.67rem;font-weight:700;color:var(--txt4);text-transform:uppercase;letter-spacing:.06em}
+.btn-var-add{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:none;border:1.5px dashed var(--brd2);border-radius:var(--rad);padding:7px 14px;font-size:.78rem;font-weight:600;color:var(--txt3);cursor:pointer;transition:var(--trans);font-family:'Inter',sans-serif}
+.btn-var-add:hover{border-color:var(--car);color:var(--car-l)}
+.btn-var-del{background:none;border:none;cursor:pointer;color:var(--txt4);font-size:.9rem;padding:4px 6px;border-radius:6px;transition:var(--trans)}
+.btn-var-del:hover{color:var(--red);background:var(--red-l)}
+.var-label-field{margin-bottom:8px}
+
 /* ════ MISC ════ */
 .empty-s{text-align:center;padding:44px 20px;color:var(--txt3)}
 .empty-s .ei{font-size:2.6rem;margin-bottom:10px}
@@ -755,6 +769,24 @@ a{text-decoration:none;color:inherit}
         <div class="fg"><label>Destaque</label>
           <select id="pf-hl"><option value="">Nenhum</option><option value="promo">Promoção</option><option value="fav">Favorito</option><option value="best">Mais vendido</option></select>
         </div>
+      </div>
+      <!-- VARIAÇÕES / SABORES -->
+      <div class="fg">
+        <label style="display:flex;align-items:center;justify-content:space-between">
+          <span>Variações <span style="font-size:.68rem;color:var(--txt4);font-weight:400">(sabores, tamanhos…)</span></span>
+          <span style="font-size:.68rem;color:var(--txt4)">opcional</span>
+        </label>
+        <div class="var-label-field">
+          <input id="pf-var-label" placeholder="Ex: Escolha o sabor, Tamanho…" style="background:var(--s2);border:1.5px solid var(--brd);border-radius:var(--rad);padding:8px 11px;color:var(--txt);font-size:.84rem;width:100%;transition:var(--trans)">
+        </div>
+        <div class="var-row-labels">
+          <span>Nome da variação *</span><span>Acréscimo (R$)</span><span>Estoque</span><span></span>
+        </div>
+        <div class="var-list" id="pf-var-list"></div>
+        <button type="button" class="btn-var-add" onclick="addVarRow()">
+          <i class="fa-solid fa-plus"></i> Adicionar opção
+        </button>
+        <div class="fg-hint" style="margin-top:6px">Estoque 0 = esgotado. Deixe Acréscimo em branco se o preço for o mesmo do produto.</div>
       </div>
       <label class="ftoggle" onclick="toggleSW('pf-active-sw','pfActive')">
         <div class="tsw on" id="pf-active-sw"></div><span class="tl">Produto ativo (visível na loja)</span>
@@ -1254,6 +1286,48 @@ function renderProdTable(){
   }).join('');
 }
 
+/* ═══ VARIAÇÕES ═══ */
+function addVarRow(name='', priceDelta='', stock=''){
+  const list = document.getElementById('pf-var-list');
+  const row  = document.createElement('div');
+  row.className = 'var-row';
+  row.innerHTML = `
+    <input type="text"   placeholder="Ex: Laranja" value="${name}" class="var-name">
+    <input type="number" placeholder="0,00"        value="${priceDelta}" step="0.01" min="0" class="var-price">
+    <input type="number" placeholder="10"          value="${stock}" min="0" class="var-stock">
+    <button type="button" class="btn-var-del" onclick="this.closest('.var-row').remove()" title="Remover"><i class="fa-solid fa-xmark"></i></button>`;
+  list.appendChild(row);
+}
+
+function getVariationsFromForm(){
+  const rows = document.querySelectorAll('#pf-var-list .var-row');
+  const vars = [];
+  rows.forEach(row => {
+    const name  = row.querySelector('.var-name').value.trim();
+    if(!name) return;
+    const delta = parseFloat(row.querySelector('.var-price').value);
+    const stock = parseInt(row.querySelector('.var-stock').value);
+    const obj   = {name};
+    if(!isNaN(delta) && delta > 0) obj.price_delta = delta;
+    if(!isNaN(stock)) obj.stock = stock; else obj.stock = 999;
+    vars.push(obj);
+  });
+  return vars;
+}
+
+function loadVariationsToForm(p){
+  const list = document.getElementById('pf-var-list');
+  list.innerHTML = '';
+  document.getElementById('pf-var-label').value = p.variation_label || '';
+  // Tenta ler campo variations (JSON array)
+  let vars = [];
+  if(Array.isArray(p.variations) && p.variations.length) vars = p.variations;
+  else if(typeof p.variations === 'string'){
+    try{ const v=JSON.parse(p.variations); if(Array.isArray(v)) vars=v; }catch(_){}
+  }
+  vars.forEach(v => addVarRow(v.name, v.price_delta||'', v.stock!=null?v.stock:''));
+}
+
 function openProdForm(id){
   editProdId=id; const p=id?products.find(x=>x.id===id):null;
   document.getElementById('pf-title').textContent=p?' Editar Produto':'＋ Novo Produto';
@@ -1278,6 +1352,7 @@ function openProdForm(id){
     document.getElementById('pf-badge').value=p.badge||'';
     document.getElementById('pf-hl').value=p.highlight||'';
     pfActive=p.is_active!==false;
+    loadVariationsToForm(p);
   } else {
     ['pf-name','pf-emoji','pf-old','pf-desc','pf-badge'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('pf-emoji').value='';
@@ -1286,6 +1361,8 @@ function openProdForm(id){
     document.getElementById('pf-low').value=5;
     document.getElementById('pf-order').value=products.length;
     document.getElementById('pf-hl').value='';
+    document.getElementById('pf-var-list').innerHTML='';
+    document.getElementById('pf-var-label').value='';
     pfActive=true;
     if(prodCatFilter!=='all')sel.value=prodCatFilter;
   }
@@ -1302,6 +1379,8 @@ async function saveProd(){
   if(!cat){toast('Selecione uma categoria.','err');return;}
   const op=parseFloat(document.getElementById('pf-old').value);
   const allImgUrls=prodImages.map(i=>i.url).filter(Boolean);
+  const vars = getVariationsFromForm();
+  const varLabel = document.getElementById('pf-var-label').value.trim();
   const payload={name,emoji:document.getElementById('pf-emoji').value||'',category_id:cat,price,
     old_price:(!isNaN(op)&&op>0)?op:null,
     image_url:allImgUrls[0]||null,
@@ -1312,6 +1391,8 @@ async function saveProd(){
     sort_order:parseInt(document.getElementById('pf-order').value)||0,
     badge:document.getElementById('pf-badge').value.trim()||null,
     highlight:document.getElementById('pf-hl').value||null,
+    variations:vars.length ? vars : null,
+    variation_label:varLabel||null,
     is_active:pfActive,updated_at:new Date().toISOString()};
   const{error}=editProdId?await sb.from('products').update(payload).eq('id',editProdId):await sb.from('products').insert(payload);
   if(error){toast('Erro: '+error.message,'err');return;}
