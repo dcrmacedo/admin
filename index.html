@@ -1136,7 +1136,20 @@ function go(view,btn){
   else document.querySelectorAll('.nav-item').forEach(b=>{if(b.getAttribute('onclick')?.includes(`'${view}'`))b.classList.add('on');});
   document.getElementById('page-title').textContent=pageTitles[view]||view;
   const fab=document.getElementById('fab-save');
-  if(fab) fab.classList.toggle('show', view==='settings');
+  const fabActions = {
+    'settings':  {icon:'fa-floppy-disk', label:'Salvar Configurações', fn:'saveSettings()'},
+    'products':  {icon:'fa-plus',        label:'Novo Produto',         fn:"openProdForm(null)"},
+    'categories':{icon:'fa-plus',        label:'Nova Categoria',       fn:"openCatForm(null)"},
+    'banners':   {icon:'fa-plus',        label:'Novo Banner',          fn:"openBannerForm(null)"},
+    'orders':    {icon:'fa-rotate-right',label:'Atualizar',            fn:"loadOrders().then(()=>{renderOrders();renderDashboard();})"},
+    'dashboard': {icon:'fa-rotate-right',label:'Atualizar',            fn:"loadOrders().then(()=>{renderOrders();renderDashboard();})"},
+  };
+  if(fab){
+    const a = fabActions[view] || fabActions['dashboard'];
+    fab.innerHTML = `<i class="fa-solid ${a.icon}"></i> ${a.label}`;
+    fab.setAttribute('onclick', a.fn);
+    fab.classList.add('show');
+  }
 }
 
 /* ═══ FORMAT ═══ */
