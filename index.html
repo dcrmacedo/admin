@@ -547,6 +547,9 @@ a{text-decoration:none;color:inherit}
             </div>
           </div>
           <div class="card-body" style="padding-bottom:0">
+            <div class="search-row" style="margin-bottom:12px">
+              <input class="sinput" id="order-search" type="search" placeholder="Buscar por nome ou nº do pedido (#20 ou #NQ9A)..." oninput="onOrderSearch(this.value)" autocomplete="off">
+            </div>
             <div class="chips" id="order-filter-chips">
               <button class="chip on" onclick="setOrderFilter(this,'all')">Todos</button>
               <button class="chip"    onclick="setOrderFilter(this,'novo')"><i class="fa-solid fa-circle" style="color:#5DADE2"></i> Novos</button>
@@ -1188,7 +1191,7 @@ function resetImgState() {
 /* ═══ STATE ═══ */
 let categories=[], products=[], orders=[], banners=[], settings={};
 let editProdId=null, editCatId=null, editBannerId=null;
-let prodFilter='all', prodCatFilter='all', orderFilter='all';
+let prodFilter='all', prodCatFilter='all', orderFilter='all', orderSearch='';
 let pfActive=true, bfActive=true, forceClosed=false, feeEnabled=false, feeDefaultFree=true;
 let coupons=[], fornadas=[], reviews=[], editCpId=null, editFnId=null;
 let loyaltyCards=[], loyaltyErr='', ltEnabled=false, ltSearch='';
@@ -1328,16 +1331,43 @@ function setOrderFilter(btn,f){
   btn.classList.add('on'); orderFilter=f; renderOrders();
 }
 
+function orderCode(o){
+  const notes=String(o.notes||'');
+  const m=notes.match(/Pedido\s*#([A-Z0-9]{3,8})/i);
+  return m?m[1].toUpperCase():'';
+}
+function onOrderSearch(val){
+  orderSearch=String(val||'').trim();
+  renderOrders();
+}
+function matchOrderSearch(o,q){
+  if(!q) return true;
+  const ql=q.toLowerCase().replace(/^#+/,'');
+  const name=String(o.customer_name||'').toLowerCase();
+  const phone=String(o.customer_phone||'').replace(/\D/g,'');
+  const code=orderCode(o).toLowerCase();
+  const id=String(o.id);
+  const notes=String(o.notes||'').toLowerCase();
+  const qDigits=ql.replace(/\D/g,'');
+  if(name.includes(ql)) return true;
+  if(id===ql || id.includes(ql)) return true;
+  if(code && (code===ql || code.includes(ql))) return true;
+  if(notes.includes(ql)) return true;
+  if(qDigits && phone.includes(qDigits)) return true;
+  return false;
+}
 function renderOrders(){
-  const filtered=orders.filter(o=>orderFilter==='all'||o.status===orderFilter);
+  const filtered=orders.filter(o=>(orderFilter==='all'||o.status===orderFilter) && matchOrderSearch(o,orderSearch));
   const el=document.getElementById('orders-list');
-  if(!filtered.length){el.innerHTML='<div class="empty-s"><div class="ei"><i class="fa-regular fa-folder-open"></i></div><p>Nenhum pedido encontrado.</p></div>';return;}
+  if(!filtered.length){el.innerHTML='<div class="empty-s"><div class="ei"><i class="fa-regular fa-folder-open"></i></div><p>'+(orderSearch?'Nenhum pedido encontrado para "'+esc(orderSearch)+'".':'Nenhum pedido encontrado.')+'</p></div>';return;}
   el.innerHTML=filtered.map(o=>{
     const items=Array.isArray(o.items)?o.items:[];
+    const code=orderCode(o);
+    const idLabel=code?`#${o.id} <span style="color:var(--car-l);font-weight:600">· #${code}</span>`:`#${o.id}`;
     return `<div class="ocard" id="ocard-${o.id}">
       <div class="ocard-hdr" onclick="toggleOrder(${o.id})">
-        <span class="ocard-id">#${o.id}</span>
-        <span class="ocard-name">${o.customer_name}</span>
+        <span class="ocard-id">${idLabel}</span>
+        <span class="ocard-name">${esc(o.customer_name||'')}</span>
         <span class="badge b-${o.status}">${statusLabel(o.status)}</span>
         <span class="ocard-total">${fp(o.total)}</span>
         <span class="ocard-time">${td(o.created_at)}</span>
