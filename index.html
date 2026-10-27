@@ -426,6 +426,16 @@ a{text-decoration:none;color:inherit}
 .fab-save:active{transform:translateY(0)}
 .fab-save.show{display:flex}
 @media(max-width:620px){.fab-save{bottom:18px;right:14px;padding:13px 18px;font-size:.85rem}}
+
+/* ════ FIDELIDADE ════ */
+.lt-grid{display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:18px;align-items:start}
+.lt-bar{height:8px;background:var(--s3);border-radius:6px;overflow:hidden;min-width:84px;flex:1}
+.lt-bar i{display:block;height:100%;background:var(--car);border-radius:6px;transition:width .3s}
+.lt-prog{display:flex;align-items:center;gap:9px;min-width:140px}
+.lt-prog span{font-size:.74rem;color:var(--txt3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lt-actions{display:flex;gap:6px;justify-content:flex-end}
+.lt-note{padding:10px 12px;background:rgba(200,129,58,.1);border:1px solid var(--brd2);border-radius:10px;font-size:.78rem;color:var(--txt2);line-height:1.6}
+@media(max-width:900px){.lt-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -470,6 +480,10 @@ a{text-decoration:none;color:inherit}
       <button class="nav-item" onclick="go('categories',this)"><span class="nav-ico"><i class="fa-solid fa-folder"></i></span> Categorias</button>
       <button class="nav-item" onclick="go('banners',this)"><span class="nav-ico"><i class="fa-solid fa-tag"></i></span> Banners</button>
       <div class="nav-label" style="margin-top:6px">Loja</div>
+      <button class="nav-item" onclick="go('loyalty',this)"><span class="nav-ico"><i class="fa-solid fa-gift"></i></span> Fidelidade</button>
+      <button class="nav-item" onclick="go('coupons',this)"><span class="nav-ico"><i class="fa-solid fa-ticket"></i></span> Cupons</button>
+      <button class="nav-item" onclick="go('fornadas',this)"><span class="nav-ico"><i class="fa-solid fa-bread-slice"></i></span> Fornadas</button>
+      <button class="nav-item" onclick="go('reviews',this)"><span class="nav-ico"><i class="fa-solid fa-star"></i></span> Avaliações</button>
       <button class="nav-item" onclick="go('settings',this)"><span class="nav-ico"><i class="fa-solid fa-gear"></i></span> Configurações</button>
       <button class="nav-item" onclick="window.open('https://dcrmacedo.github.io/teste/','_blank')"><span class="nav-ico"><i class="fa-solid fa-globe"></i></span> Ver Loja</button>
     </nav>
@@ -615,6 +629,55 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
 
+      <!-- ── CUPONS / FORNADAS / AVALIAÇÕES ── -->
+      <div class="view" id="view-coupons"><div class="card">
+        <div class="card-hdr"><h3><i class="fa-solid fa-ticket"></i> Cupons de desconto</h3><button class="btn btn-primary btn-sm" onclick="openCp(null)"><i class="fa-solid fa-plus"></i> Novo cupom</button></div>
+        <div class="card-body" id="cp-list" style="overflow-x:auto"></div></div></div>
+      <div class="view" id="view-fornadas"><div class="card">
+        <div class="card-hdr"><h3><i class="fa-solid fa-bread-slice"></i> Fornadas</h3><button class="btn btn-primary btn-sm" onclick="openFn(null)"><i class="fa-solid fa-plus"></i> Nova fornada</button></div>
+        <div class="card-body" id="fn-list" style="overflow-x:auto"></div></div></div>
+      <div class="view" id="view-reviews">
+        <div class="stats" id="rv-stats"></div>
+        <div class="card"><div class="card-hdr"><h3><i class="fa-solid fa-star"></i> Avaliações dos clientes</h3></div>
+        <div class="card-body" id="rv-list"></div></div></div>
+
+      <!-- ── FIDELIDADE ── -->
+      <div class="view" id="view-loyalty">
+        <div class="stats" id="lt-stats"></div>
+        <div class="lt-grid">
+          <div class="sc"><h4><i class="fa-solid fa-gift"></i> Regra do cartão</h4>
+            <div class="inner">
+              <label class="ftoggle" onclick="toggleSW('lt-sw','ltEnabled')">
+                <div class="tsw" id="lt-sw"></div>
+                <span class="tl">Cartão fidelidade ativo na loja</span>
+              </label>
+              <div class="fg"><label>Pedidos para ganhar o prêmio</label>
+                <input type="number" id="lt-need" min="1" step="1" placeholder="10" oninput="ltPreview()">
+              </div>
+              <div class="fg"><label>Prêmio</label>
+                <input id="lt-reward" placeholder="1 sonho grátis" oninput="ltPreview()">
+              </div>
+              <div class="fg"><label>Valor mínimo por pedido (R$)</label>
+                <input type="number" id="lt-min" min="0" step="0.5" placeholder="0" oninput="ltPreview()">
+                <div class="fg-hint">Deixe 0 para que qualquer pedido conte.</div>
+              </div>
+              <div class="lt-note" id="lt-preview"></div>
+              <div class="lt-note">
+                <strong style="color:var(--car-l)">Como funciona:</strong><br>
+                O cliente ganha 1 carimbo quando o pedido muda para <strong>Entregue</strong>. O cartão é ligado ao WhatsApp, então não se perde ao trocar de celular. Pedido sem WhatsApp não pontua. Ao completar, o prêmio aparece na lista para você resgatar.
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="card-hdr"><h3><i class="fa-solid fa-users"></i> Clientes do programa</h3></div>
+            <div class="card-body">
+              <div class="search-row"><input class="sinput" id="lt-search" placeholder="Buscar por nome ou WhatsApp" oninput="ltSearch=this.value;renderLoyalty()"></div>
+              <div id="lt-list" style="overflow-x:auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ── CONFIGURAÇÕES ── -->
       <div class="view" id="view-settings">
         <div class="sg">
@@ -623,7 +686,8 @@ a{text-decoration:none;color:inherit}
               <div class="fg"><label>Nome da Loja</label><input id="st-name" placeholder="Panificadora"></div>
               <div class="fg"><label>Telefone / WhatsApp</label><input id="st-phone" placeholder="5591981120535"></div>
               <div class="fg"><label>Endereço (exibido na loja)</label><input id="st-addr" placeholder="Alameda Principal, 84..."></div>
-              <div class="fg"><label>Link Google Maps</label><input id="st-maps" placeholder="https://maps.google.com/..."></div>
+              <div class="fg"><label>Link Google Maps / avaliação</label><input id="st-maps" placeholder="https://maps.google.com/...">
+                <div class="fg-hint">Também é o destino do botão "Avaliar no Google Maps" que o cliente vê ao finalizar o pedido. Dica: use o link "Pedir avaliações" do seu Perfil da Empresa no Google.</div></div>
             </div>
           </div>
           <div class="sc"><h4><i class="fa-regular fa-clock"></i> Horário de Funcionamento</h4>
@@ -690,6 +754,13 @@ a{text-decoration:none;color:inherit}
               </div>
             </div>
           </div>
+          <div class="sc"><h4><i class="fa-brands fa-pix"></i> Pagamento via Pix</h4>
+            <div class="inner">
+              <div class="fg"><label>Tipo da chave</label><select id="st-pix-type"><option value="">Sem Pix</option><option>CPF</option><option>CNPJ</option><option>Telefone</option><option>E-mail</option><option>Aleatória</option></select></div>
+              <div class="fg"><label>Chave Pix</label><input id="st-pix-key" placeholder="Chave exibida ao cliente no pedido"></div>
+              <div class="fg"><label>Nome do recebedor</label><input id="st-pix-name" placeholder="Como aparece no banco"></div>
+            </div>
+          </div>
           <div class="sc"><h4><i class="fa-solid fa-bullhorn"></i> Aviso / Anúncio</h4>
             <div class="inner">
               <div class="fg"><label>Mensagem</label>
@@ -725,7 +796,7 @@ a{text-decoration:none;color:inherit}
     <div class="panel-body">
       <div class="fg"><label>Nome *</label><input id="pf-name" placeholder="Ex: Coxinha de Frango"></div>
       <div class="g2">
-        <div class="fg"><label>Emoji</label><input id="pf-emoji" placeholder="" maxlength="4"></div>
+        <div class="fg" style="display:none"><label>Emoji</label><input id="pf-emoji" placeholder="" maxlength="4"></div>
         <div class="fg"><label>Categoria *</label><select id="pf-cat"></select></div>
       </div>
       <!-- MULTI-IMAGE PICKER -->
@@ -806,7 +877,7 @@ a{text-decoration:none;color:inherit}
     <div class="panel-body">
       <div class="fg"><label>Nome *</label><input id="cf-name" placeholder="Ex: Salgados"></div>
       <div class="g2">
-        <div class="fg"><label>Emoji</label><input id="cf-emoji" placeholder="" maxlength="4"></div>
+        <div class="fg" style="display:none"><label>Emoji</label><input id="cf-emoji" placeholder="" maxlength="4"></div>
         <div class="fg"><label>Ordem</label><input type="number" id="cf-order" min="0" placeholder="0"></div>
       </div>
     </div>
@@ -814,6 +885,44 @@ a{text-decoration:none;color:inherit}
       <button class="btn btn-ghost" onclick="closeOv('cat')">Cancelar</button>
       <button class="btn btn-primary" onclick="saveCat()"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
     </div>
+  </div>
+</div>
+
+<!-- CUPOM / FORNADA -->
+<div class="ov" id="ov-cp" onclick="closeOv('cp',event)">
+  <div class="panel" style="max-width:420px">
+    <div class="panel-hdr"><h3 id="cp-title">Novo cupom</h3><button class="btn btn-ghost btn-sm" onclick="closeOv('cp')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="panel-body">
+      <div class="fg"><label>Código *</label><input id="cp-code" placeholder="BEMVINDO10" style="text-transform:uppercase"></div>
+      <div class="g2">
+        <div class="fg"><label>Tipo</label><select id="cp-type"><option value="percent">Porcentagem (%)</option><option value="fixed">Valor fixo (R$)</option></select></div>
+        <div class="fg"><label>Valor *</label><input type="number" id="cp-value" min="0" step="0.5"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Pedido mínimo (R$)</label><input type="number" id="cp-min" min="0" step="0.5" placeholder="0"></div>
+        <div class="fg"><label>Limite de usos</label><input type="number" id="cp-max" min="1" placeholder="Sem limite"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Validade</label><input type="date" id="cp-exp"></div>
+        <div class="fg"><label>Situação</label><select id="cp-active"><option value="1">Ativo</option><option value="0">Inativo</option></select></div>
+      </div>
+    </div>
+    <div class="panel-foot"><button class="btn btn-ghost" onclick="closeOv('cp')">Cancelar</button><button class="btn btn-primary" onclick="saveCp()"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
+  </div>
+</div>
+<div class="ov" id="ov-fn" onclick="closeOv('fn',event)">
+  <div class="panel" style="max-width:420px">
+    <div class="panel-hdr"><h3 id="fn-title">Nova fornada</h3><button class="btn btn-ghost btn-sm" onclick="closeOv('fn')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="panel-body">
+      <div class="fg"><label>O que sai *</label><input id="fn-name" placeholder="Pão francês"></div>
+      <div class="g2">
+        <div class="fg"><label>Horário *</label><input type="time" id="fn-time"></div>
+        <div class="fg"><label>Dias</label><select id="fn-days"><option value="all">Todos os dias</option><option value="wk">Segunda a sexta</option><option value="sat">Segunda a sábado</option><option value="we">Fim de semana</option></select></div>
+      </div>
+      <div class="fg"><label>Observação</label><input id="fn-note" placeholder="Opcional"></div>
+      <div class="fg"><label>Situação</label><select id="fn-active"><option value="1">Ativa</option><option value="0">Pausada</option></select></div>
+    </div>
+    <div class="panel-foot"><button class="btn btn-ghost" onclick="closeOv('fn')">Cancelar</button><button class="btn btn-primary" onclick="saveFn()"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
   </div>
 </div>
 
@@ -890,7 +999,7 @@ a{text-decoration:none;color:inherit}
 
 <script>
 /* ══════════════════════════════════════════
-   ⚙️ CONFIGURAÇÃO SUPABASE
+   CONFIGURAÇÃO SUPABASE
    Substitua com suas credenciais do projeto
    ══════════════════════════════════════════ */
 const SUPABASE_URL      = 'https://kuoopngddcnnzgykpzhx.supabase.co';
@@ -992,7 +1101,7 @@ function renderImgGrid() {
     <div class="img-thumb" onclick="openLboxProd(${i})">
       <img src="${img.url}" onerror="this.parentElement.style.display='none'">
       ${i===0?'<span class="img-thumb-main">CAPA</span>':''}
-      <button class="img-thumb-del" onclick="event.stopPropagation();removeImg(${i})">✕</button>
+      <button class="img-thumb-del" onclick="event.stopPropagation();removeImg(${i})"><i class="fa-solid fa-xmark"></i></button>
     </div>`).join('');
 }
 
@@ -1081,6 +1190,8 @@ let categories=[], products=[], orders=[], banners=[], settings={};
 let editProdId=null, editCatId=null, editBannerId=null;
 let prodFilter='all', prodCatFilter='all', orderFilter='all';
 let pfActive=true, bfActive=true, forceClosed=false, feeEnabled=false, feeDefaultFree=true;
+let coupons=[], fornadas=[], reviews=[], editCpId=null, editFnId=null;
+let loyaltyCards=[], loyaltyErr='', ltEnabled=false, ltSearch='';
 
 /* ═══ AUTH ═══ */
 async function login(){
@@ -1100,8 +1211,8 @@ async function boot(){
   document.getElementById('sb-email').textContent=user.email;
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').classList.add('show');
-  await Promise.all([loadSettings(),loadCategories(),loadProducts(),loadOrders(),loadBanners()]);
-  renderDashboard(); renderProdCtabs(); renderProdTable(); renderCatTable(); renderBannersAdmin(); applySettingsForm();
+  await Promise.all([loadSettings(),loadCategories(),loadProducts(),loadOrders(),loadBanners(),loadLoyalty(),loadExtras()]);
+  renderDashboard(); renderProdCtabs(); renderProdTable(); renderCatTable(); renderBannersAdmin(); applySettingsForm(); renderExtras();
   startClock(); subscribeRealtime();
 }
 
@@ -1110,6 +1221,11 @@ async function loadSettings(){const{data}=await sb.from('store_settings').select
 async function loadCategories(){const{data}=await sb.from('categories').select('*').order('sort_order');if(data)categories=data;}
 async function loadProducts(){const{data}=await sb.from('products').select('*').order('sort_order');if(data)products=data;}
 async function loadOrders(){const{data}=await sb.from('orders').select('*').order('created_at',{ascending:false}).limit(100);if(data)orders=data;}
+async function loadLoyalty(){
+  const{data,error}=await sb.from('loyalty_cards').select('*').order('updated_at',{ascending:false}).limit(500);
+  if(error){loyaltyCards=[];loyaltyErr=error.message;return;}
+  loyaltyErr='';loyaltyCards=data||[];
+}
 async function loadBanners(){const{data}=await sb.from('banners').select('*').order('sort_order');if(data)banners=data;}
 
 /* ═══ REALTIME ═══ */
@@ -1119,6 +1235,10 @@ function subscribeRealtime(){
     .on('postgres_changes',{event:'*',schema:'public',table:'categories'}, async()=>{await loadCategories();renderCatTable();renderProdCtabs();renderDashboard();})
     .on('postgres_changes',{event:'*',schema:'public',table:'orders'},     async()=>{await loadOrders();renderOrders();renderDashboard();updateOrderBadge();})
     .on('postgres_changes',{event:'*',schema:'public',table:'banners'},    async()=>{await loadBanners();renderBannersAdmin();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'coupons'},async()=>{await loadExtras();renderExtras();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'fornadas'},async()=>{await loadExtras();renderExtras();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'reviews'},async()=>{await loadExtras();renderExtras();})
+    .on('postgres_changes',{event:'*',schema:'public',table:'loyalty_cards'},async()=>{await loadLoyalty();renderLoyalty();})
     .on('postgres_changes',{event:'*',schema:'public',table:'store_settings'}, async()=>{await loadSettings();applySettingsForm();})
     .subscribe();
 }
@@ -1127,7 +1247,7 @@ function subscribeRealtime(){
 function startClock(){const t=()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR');t();setInterval(t,1000);}
 
 /* ═══ NAV ═══ */
-const pageTitles={dashboard:'Dashboard',orders:'Pedidos',products:'Produtos',categories:'Categorias',banners:'Banners & Promoções',settings:'Configurações da Loja'};
+const pageTitles={dashboard:'Dashboard',orders:'Pedidos',products:'Produtos',categories:'Categorias',banners:'Banners & Promoções',loyalty:'Cartão Fidelidade',coupons:'Cupons',fornadas:'Fornadas',reviews:'Avaliações',settings:'Configurações da Loja'};
 function go(view,btn){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
   document.getElementById('view-'+view).classList.add('on');
@@ -1141,6 +1261,10 @@ function go(view,btn){
     'products':  {icon:'fa-plus',        label:'Novo Produto',         fn:"openProdForm(null)"},
     'categories':{icon:'fa-plus',        label:'Nova Categoria',       fn:"openCatForm(null)"},
     'banners':   {icon:'fa-plus',        label:'Novo Banner',          fn:"openBannerForm(null)"},
+    'coupons':   {icon:'fa-plus',        label:'Novo cupom',           fn:'openCp(null)'},
+    'fornadas':  {icon:'fa-plus',        label:'Nova fornada',         fn:'openFn(null)'},
+    'reviews':   {icon:'fa-rotate-right',label:'Atualizar',            fn:'loadExtras().then(renderExtras)'},
+    'loyalty':   {icon:'fa-floppy-disk', label:'Salvar regra',         fn:'saveLoyalty()'},
     'orders':    {icon:'fa-rotate-right',label:'Atualizar',            fn:"loadOrders().then(()=>{renderOrders();renderDashboard();})"},
     'dashboard': {icon:'fa-rotate-right',label:'Atualizar',            fn:"loadOrders().then(()=>{renderOrders();renderDashboard();})"},
   };
@@ -1155,6 +1279,10 @@ function go(view,btn){
 /* ═══ FORMAT ═══ */
 const fp=n=>'R$ '+Number(n||0).toFixed(2).replace('.',',');
 const td=s=>{if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});};
+
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtPhone=p=>{let d=String(p||'').replace(/\D/g,'');if(d.length>=12&&d.startsWith('55'))d=d.slice(2);
+  return d.length===11?`(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`:d.length===10?`(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`:d;};
 
 /* ═══ DASHBOARD ═══ */
 function renderDashboard(){
@@ -1179,7 +1307,7 @@ function renderDashboard(){
   const crit=products.filter(p=>p.stock<=(p.low_stock_alert||5));
   document.getElementById('dash-stock').innerHTML=!crit.length?'<div class="empty-s"><div class="ei"><i class="fa-solid fa-circle-check" style="color:var(--grn)"></i></div><p>Tudo em ordem!</p></div>':crit.map(p=>`
     <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--s2);border-radius:10px;margin-bottom:8px;border:1px solid var(--brd)">
-      <div style="font-size:1.4rem">${p.emoji||'<i class="fa-solid fa-box"></i>'}</div>
+      <div style="font-size:1.4rem"><i class="fa-solid fa-box"></i></div>
       <div style="flex:1"><div style="font-weight:600;font-size:.84rem;color:var(--txt)">${p.name}</div><div style="font-size:.72rem;color:var(--txt3)">${p.stock} un.</div></div>
       <span class="badge ${p.stock===0?'b-out':'b-low'}">${p.stock===0?'Esgotado':'Baixo'}</span>
     </div>`).join('');
@@ -1220,6 +1348,7 @@ function renderOrders(){
         <div class="sep"></div>
         <div class="ocard-meta">
           <div><i class="fa-solid fa-location-dot" style="color:var(--car)"></i> <strong>Endereço:</strong> ${o.address}</div>
+          ${o.customer_phone?`<div><i class="fa-brands fa-whatsapp" style="color:var(--car)"></i> <strong>WhatsApp:</strong> ${esc(fmtPhone(o.customer_phone))}${o.loyalty_counted?' · <span style="color:var(--grn)">carimbo contado</span>':''}</div>`:''}
           <div><i class="fa-solid fa-credit-card" style="color:var(--car)"></i> <strong>Pagamento:</strong> ${o.payment_method}${o.change_for?` (troco p/ ${fp(o.change_for)})`:''}${o.notes?`</div><div><i class="fa-solid fa-note-sticky" style="color:var(--car)"></i> <strong>Obs:</strong> ${o.notes}`:''}</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap">
@@ -1262,7 +1391,7 @@ function setPF(btn,f){document.querySelectorAll('.chips .chip').forEach(c=>c.cla
 function renderProdCtabs(){
   const el=document.getElementById('prod-ctabs');
   el.innerHTML=`<button class="ctab ${prodCatFilter==='all'?'on':''}" onclick="setPCF(this,'all')">Todos</button>`;
-  categories.forEach(c=>el.innerHTML+=`<button class="ctab ${prodCatFilter===c.id?'on':''}" onclick="setPCF(this,'${c.id}')">${c.emoji||''} ${c.name}</button>`);
+  categories.forEach(c=>el.innerHTML+=`<button class="ctab ${prodCatFilter===c.id?'on':''}" onclick="setPCF(this,'${c.id}')">${c.name}</button>`);
 }
 function setPCF(btn,f){document.querySelectorAll('.ctab').forEach(c=>c.classList.remove('on'));btn.classList.add('on');prodCatFilter=f;renderProdTable();}
 
@@ -1287,7 +1416,7 @@ function renderProdTable(){
     const hasMore=allImgs.length>1;
     const thumb=p.image_url
       ?`<div class="prod-ico" style="cursor:pointer;position:relative" onclick="event.stopPropagation();openProdLbox(${p.id})"><img src="${p.image_url}">${hasMore?`<span style="position:absolute;bottom:0;right:0;background:rgba(0,0,0,.7);color:#fff;font-size:.55rem;font-weight:700;padding:1px 4px;border-radius:3px">+${allImgs.length-1}</span>`:''}</div>`
-      :`<div class="prod-ico">${p.emoji||''}</div>`;
+      :`<div class="prod-ico"><i class="fa-solid fa-bread-slice"></i></div>`;
     return `<tr>
       <td><div class="prod-thumb">${thumb}<div><div class="prod-n">${p.name}</div><div class="prod-id">#${p.id}${hasMore?` · <span style="color:var(--car-l)">${allImgs.length} fotos</span>`:''}</div></div></div></td>
       <td style="font-size:.8rem;color:var(--txt2)">${cat?cat.emoji+' '+cat.name:'—'}</td>
@@ -1345,7 +1474,7 @@ function openProdForm(id){
   editProdId=id; const p=id?products.find(x=>x.id===id):null;
   document.getElementById('pf-title').textContent=p?' Editar Produto':'＋ Novo Produto';
   const sel=document.getElementById('pf-cat');
-  sel.innerHTML=categories.map(c=>`<option value="${c.id}">${c.emoji||''} ${c.name}</option>`).join('');
+  sel.innerHTML=categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   resetImgState();
   if(p){
     document.getElementById('pf-name').value=p.name||'';
@@ -1437,7 +1566,7 @@ function renderCatTable(){
     const cnt=products.filter(p=>p.category_id===c.id).length;
     return `<tr>
       <td style="font-weight:600;color:var(--txt)">${c.name}</td>
-      <td style="font-size:1.4rem">${c.emoji||'—'}</td>
+      <td style="color:var(--car)"><i class="fa-solid fa-folder"></i></td>
       <td style="font-size:.83rem;color:var(--txt3)">${c.sort_order??0}</td>
       <td><span style="background:var(--s2);border:1px solid var(--brd);padding:3px 10px;border-radius:20px;font-size:.76rem;color:var(--txt2);font-weight:600">${cnt} produto${cnt!==1?'s':''}</span></td>
       <td><div class="row-actions"><button class="btn btn-ghost btn-sm" onclick="openCatForm('${c.id}')"><i class="fa-solid fa-pen-to-square"></i></button><button class="btn btn-danger btn-xs" onclick="confirmDelCat('${c.id}')"><i class="fa-solid fa-trash"></i></button></div></td>
@@ -1525,7 +1654,7 @@ function openBannerForm(id){
   document.getElementById('bf-badge').value=b?.badge_label||'';
   document.getElementById('bf-btn').value=b?.link_label||'Ver oferta';
   const bfCatSel=document.getElementById('bf-cat');
-  bfCatSel.innerHTML='<option value="">— Nenhuma —</option>'+categories.map(c=>`<option value="${c.id}">${c.emoji?c.emoji+' ':''}${c.name}</option>`).join('');
+  bfCatSel.innerHTML='<option value="">— Nenhuma —</option>'+categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   bfCatSel.value=b?.link_cat||'';
   document.getElementById('bf-order').value=b?.sort_order??banners.length;
   document.getElementById('bf-exp').value=b?.expires_at?new Date(b.expires_at).toISOString().slice(0,16):'';
@@ -1567,6 +1696,160 @@ async function delBanner(id){
   await loadBanners(); renderBannersAdmin();
 }
 
+/* ═══ CUPONS · FORNADAS · AVALIAÇÕES ═══ */
+const DAYSET={all:[0,1,2,3,4,5,6],wk:[1,2,3,4,5],sat:[1,2,3,4,5,6],we:[0,6]};
+const DAYLBL={all:'Todos os dias',wk:'Segunda a sexta',sat:'Segunda a sábado',we:'Fim de semana'};
+const pill=(t,ok)=>`<span class="badge" style="background:${ok?'var(--grn-l)':'var(--red-l)'};color:${ok?'var(--grn)':'var(--red)'}">${t}</span>`;
+const dmy=d=>d?d.split('-').reverse().join('/'):'—';
+async function loadExtras(){
+  const q=async(t,c,asc)=>{const{data}=await sb.from(t).select('*').order(c,{ascending:asc});return data||[];};
+  [coupons,fornadas,reviews]=await Promise.all([q('coupons','created_at',false),q('fornadas','time_at',true),q('reviews','created_at',false)]);
+}
+const emptyBox=(ic,t)=>`<div class="empty-s"><div class="ei"><i class="fa-solid ${ic}"></i></div><p>${t}</p></div>`;
+const rowBtns=(ed,tb,id,lb)=>`<div class="lt-actions"><button class="btn btn-ghost btn-xs" onclick="${ed}"><i class="fa-solid fa-pen"></i></button><button class="btn btn-danger btn-xs" onclick="confirmDelRow('${tb}',${id},'${lb}')"><i class="fa-solid fa-trash"></i></button></div>`;
+function renderExtras(){
+  document.getElementById('cp-list').innerHTML=!coupons.length?emptyBox('fa-ticket','Nenhum cupom criado.'):`<table class="tbl"><thead><tr><th>Código</th><th>Desconto</th><th>Pedido mín.</th><th>Usos</th><th>Validade</th><th>Situação</th><th></th></tr></thead><tbody>${coupons.map(c=>{
+    const exp=c.expires_at&&c.expires_at<new Date().toISOString().slice(0,10), esg=c.max_uses&&c.uses>=c.max_uses;
+    return `<tr><td style="font-weight:700;color:var(--car-l)">${esc(c.code)}</td><td>${c.type==='percent'?c.value+'%':fp(c.value)}</td><td>${c.min_order>0?fp(c.min_order):'—'}</td><td>${c.uses}${c.max_uses?'/'+c.max_uses:''}</td><td>${dmy(c.expires_at)}</td><td>${exp?pill('Vencido',0):esg?pill('Esgotado',0):c.active?pill('Ativo',1):pill('Inativo',0)}</td><td>${rowBtns(`openCp(${c.id})`,'coupons',c.id,esc(c.code))}</td></tr>`;}).join('')}</tbody></table>`;
+  document.getElementById('fn-list').innerHTML=!fornadas.length?emptyBox('fa-bread-slice','Nenhuma fornada cadastrada.'):`<table class="tbl"><thead><tr><th>Horário</th><th>O que sai</th><th>Dias</th><th>Situação</th><th></th></tr></thead><tbody>${fornadas.map(f=>`<tr><td style="font-weight:700;color:var(--car-l)">${esc(String(f.time_at).slice(0,5))}</td><td><div style="font-weight:600;color:var(--txt)">${esc(f.name)}</div>${f.note?`<div style="font-size:.72rem;color:var(--txt3)">${esc(f.note)}</div>`:''}</td><td>${esc(f.days_label||'')}</td><td>${f.active?pill('Ativa',1):pill('Pausada',0)}</td><td>${rowBtns(`openFn(${f.id})`,'fornadas',f.id,esc(f.name))}</td></tr>`).join('')}</tbody></table>`;
+  const pub=reviews.filter(r=>r.approved), avg=pub.length?(pub.reduce((a,r)=>a+r.rating,0)/pub.length).toFixed(1).replace('.',','):'—', pend=reviews.filter(r=>!r.approved).length;
+  const st=(ic,cl,v,l)=>`<div class="stat" style="cursor:default"><div class="stat-top"><div class="stat-ico ${cl}"><i class="fa-solid ${ic}"></i></div></div><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`;
+  document.getElementById('rv-stats').innerHTML=st('fa-star','ic-y',avg,'Nota média (publicadas)')+st('fa-eye','ic-g',pub.length,'Publicadas')+st('fa-hourglass-half','ic-o',pend,'Aguardando aprovação')+st('fa-comments','ic-b',reviews.length,'Total');
+  document.getElementById('rv-list').innerHTML=!reviews.length?emptyBox('fa-star','Nenhuma avaliação ainda.'):reviews.map(r=>`
+    <div style="padding:12px;background:var(--s2);border:1px solid var(--brd);border-radius:10px;margin-bottom:9px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <strong style="color:var(--txt)">${esc(r.customer_name||'Cliente')}</strong>
+        <span style="color:var(--ylw);letter-spacing:2px">${'<i class="fa-solid fa-star"></i>'.repeat(r.rating)}<span style="color:var(--txt4)">${'<i class="fa-solid fa-star"></i>'.repeat(5-r.rating)}</span></span>
+        <span style="font-size:.72rem;color:var(--txt3)">${td(r.created_at)}</span>${r.approved?pill('Publicada',1):pill('Oculta',0)}
+        <div class="lt-actions" style="margin-left:auto"><button class="btn ${r.approved?'btn-ghost':'btn-success'} btn-xs" onclick="toggleReview(${r.id},${!r.approved})">${r.approved?'Ocultar':'Publicar'}</button><button class="btn btn-danger btn-xs" onclick="confirmDelRow('reviews',${r.id},'esta avaliação')"><i class="fa-solid fa-trash"></i></button></div>
+      </div>${r.comment?`<div style="margin-top:7px;font-size:.84rem;color:var(--txt2);line-height:1.5">${esc(r.comment)}</div>`:''}</div>`).join('');
+}
+async function toggleReview(id,approved){
+  const{error}=await sb.from('reviews').update({approved}).eq('id',id);
+  if(error){toast('Erro: '+error.message,'err');return;}
+  await loadExtras();renderExtras();toast(approved?'Avaliação publicada.':'Avaliação oculta.','ok');
+}
+function confirmDelRow(tb,id,lb){
+  document.getElementById('conf-ico').innerHTML='<i class="fa-solid fa-triangle-exclamation" style="color:var(--red);font-size:2.8rem"></i>';
+  document.getElementById('conf-msg').textContent=`Excluir ${lb}? Não dá para desfazer.`;
+  document.getElementById('conf-ok').onclick=async()=>{closeOv('confirm');const{error}=await sb.from(tb).delete().eq('id',id);
+    if(error){toast('Erro: '+error.message,'err');return;}await loadExtras();renderExtras();toast('Excluído.','info');};
+  document.getElementById('ov-confirm').classList.add('open');
+}
+const $v=id=>document.getElementById(id);
+function openCp(id){
+  editCpId=id;const c=coupons.find(x=>x.id===id)||{};
+  $v('cp-title').textContent=id?'Editar cupom':'Novo cupom';
+  $v('cp-code').value=c.code||'';$v('cp-type').value=c.type||'percent';$v('cp-value').value=c.value??'';
+  $v('cp-min').value=c.min_order||'';$v('cp-max').value=c.max_uses||'';$v('cp-exp').value=c.expires_at||'';
+  $v('cp-active').value=c.active===false?'0':'1';$v('ov-cp').classList.add('open');
+}
+async function saveCp(){
+  const code=$v('cp-code').value.trim().toUpperCase().replace(/\s+/g,''),value=parseFloat($v('cp-value').value),type=$v('cp-type').value;
+  if(!code){toast('Informe o código.','err');return;}
+  if(!(value>0)||(type==='percent'&&value>100)){toast('Informe um valor válido.','err');return;}
+  const p={code,type,value,min_order:parseFloat($v('cp-min').value)||0,max_uses:parseInt($v('cp-max').value)||null,expires_at:$v('cp-exp').value||null,active:$v('cp-active').value==='1'};
+  const{error}=editCpId?await sb.from('coupons').update(p).eq('id',editCpId):await sb.from('coupons').insert(p);
+  if(error){toast(error.code==='23505'?'Já existe um cupom com esse código.':'Erro: '+error.message,'err');return;}
+  closeOv('cp');await loadExtras();renderExtras();toast('Cupom salvo!','ok');
+}
+function openFn(id){
+  editFnId=id;const f=fornadas.find(x=>x.id===id)||{};
+  $v('fn-title').textContent=id?'Editar fornada':'Nova fornada';
+  $v('fn-name').value=f.name||'';$v('fn-time').value=f.time_at?String(f.time_at).slice(0,5):'';
+  $v('fn-days').value=Object.keys(DAYLBL).find(k=>DAYLBL[k]===f.days_label)||'all';
+  $v('fn-note').value=f.note||'';$v('fn-active').value=f.active===false?'0':'1';$v('ov-fn').classList.add('open');
+}
+async function saveFn(){
+  const name=$v('fn-name').value.trim(),time_at=$v('fn-time').value,k=$v('fn-days').value;
+  if(!name||!time_at){toast('Informe o que sai e o horário.','err');return;}
+  const p={name,time_at,days:DAYSET[k],days_label:DAYLBL[k],note:$v('fn-note').value.trim(),active:$v('fn-active').value==='1'};
+  const{error}=editFnId?await sb.from('fornadas').update(p).eq('id',editFnId):await sb.from('fornadas').insert(p);
+  if(error){toast('Erro: '+error.message,'err');return;}
+  closeOv('fn');await loadExtras();renderExtras();toast('Fornada salva!','ok');
+}
+
+/* ═══ FIDELIDADE ═══ */
+function applyLoyaltyForm(){
+  ltEnabled=!!settings.loyalty_enabled;
+  document.getElementById('lt-sw').className='tsw'+(ltEnabled?' on':'');
+  document.getElementById('lt-need').value=settings.loyalty_orders_required||10;
+  document.getElementById('lt-reward').value=settings.loyalty_reward||'';
+  document.getElementById('lt-min').value=settings.loyalty_min_order||'';
+  ltPreview(); renderLoyalty();
+}
+function ltPreview(){
+  const need=parseInt(document.getElementById('lt-need').value,10)||0;
+  const reward=document.getElementById('lt-reward').value.trim();
+  const min=parseFloat(document.getElementById('lt-min').value)||0;
+  document.getElementById('lt-preview').innerHTML=need&&reward
+    ?`A cada <strong>${need}</strong> pedido${need>1?'s':''} entregue${need>1?'s':''}, o cliente ganha <strong>${esc(reward)}</strong>.${min>0?` Só contam pedidos a partir de <strong>${fp(min)}</strong>.`:''}`
+    :'Defina quantos pedidos e qual é o prêmio.';
+}
+async function saveLoyalty(){
+  const need=parseInt(document.getElementById('lt-need').value,10);
+  const reward=document.getElementById('lt-reward').value.trim();
+  const min=parseFloat(document.getElementById('lt-min').value)||0;
+  if(!(need>=1)){toast('Informe quantos pedidos dão direito ao prêmio.','err');return;}
+  if(ltEnabled&&!reward){toast('Descreva o prêmio antes de ativar.','err');return;}
+  const{error}=await sb.from('store_settings').update({
+    loyalty_enabled:ltEnabled,loyalty_orders_required:need,
+    loyalty_reward:reward||'1 sonho grátis',loyalty_min_order:min,
+    updated_at:new Date().toISOString()}).eq('id',1);
+  if(error){toast('Erro: '+error.message,'err');return;}
+  toast('Regra do cartão salva!','ok');
+  await loadSettings(); applyLoyaltyForm();
+}
+function renderLoyalty(){
+  const need=Math.max(1,parseInt(settings.loyalty_orders_required,10)||10);
+  const sum=k=>loyaltyCards.reduce((a,c)=>a+(c[k]||0),0);
+  document.getElementById('lt-stats').innerHTML=`
+    <div class="stat" style="cursor:default"><div class="stat-top"><div class="stat-ico ic-o"><i class="fa-solid fa-users" style="color:var(--car-l)"></i></div></div><div class="stat-val">${loyaltyCards.length}</div><div class="stat-lbl">Clientes no programa</div></div>
+    <div class="stat" style="cursor:default"><div class="stat-top"><div class="stat-ico ic-g"><i class="fa-solid fa-gift" style="color:var(--grn)"></i></div></div><div class="stat-val" style="${sum('rewards_available')?'color:var(--grn)':''}">${sum('rewards_available')}</div><div class="stat-lbl">Prêmios a resgatar</div></div>
+    <div class="stat" style="cursor:default"><div class="stat-top"><div class="stat-ico ic-b"><i class="fa-solid fa-circle-check" style="color:#5DADE2"></i></div></div><div class="stat-val">${sum('rewards_redeemed')}</div><div class="stat-lbl">Prêmios resgatados</div></div>
+    <div class="stat" style="cursor:default"><div class="stat-top"><div class="stat-ico ic-y"><i class="fa-solid fa-stamp" style="color:var(--ylw)"></i></div></div><div class="stat-val">${sum('total_orders')}</div><div class="stat-lbl">Pedidos pontuados</div></div>`;
+  const el=document.getElementById('lt-list');
+  if(loyaltyErr){
+    el.innerHTML=`<div class="empty-s"><div class="ei"><i class="fa-solid fa-database"></i></div><p>Não foi possível carregar os cartões.<br>Rode o arquivo <strong>fidelidade.sql</strong> no SQL Editor do Supabase.<br><span style="font-size:.72rem;color:var(--txt4)">${esc(loyaltyErr)}</span></p></div>`;return;
+  }
+  const q=ltSearch.trim().toLowerCase(), qd=q.replace(/\D/g,'');
+  const list=loyaltyCards.filter(c=>!q||(c.customer_name||'').toLowerCase().includes(q)||(qd&&String(c.phone).includes(qd)));
+  if(!list.length){
+    el.innerHTML=`<div class="empty-s"><div class="ei"><i class="fa-solid fa-gift"></i></div><p>${loyaltyCards.length?'Nenhum cliente encontrado.':'Ninguém tem carimbo ainda. O primeiro pedido entregue com WhatsApp abre o cartão.'}</p></div>`;return;
+  }
+  el.innerHTML=`<table class="tbl"><thead><tr><th>Cliente</th><th>Progresso</th><th>Prêmio</th><th></th></tr></thead><tbody>${list.map(c=>{
+    const pct=Math.min(100,Math.round((c.stamps||0)/need*100));
+    return `<tr>
+      <td><div style="font-weight:600;color:var(--txt)">${esc(c.customer_name||'Sem nome')}</div><div style="font-size:.72rem;color:var(--txt3)">${esc(fmtPhone(c.phone))}</div></td>
+      <td><div class="lt-prog"><div class="lt-bar"><i style="width:${pct}%"></i></div><span>${c.stamps||0}/${need}</span></div></td>
+      <td>${c.rewards_available>0?`<span class="badge" style="background:var(--grn-l);color:var(--grn)">${c.rewards_available} a resgatar</span>`:'<span style="color:var(--txt4)">—</span>'}<div style="font-size:.7rem;color:var(--txt4);margin-top:2px">${c.rewards_redeemed||0} já resgatado${c.rewards_redeemed===1?'':'s'}</div></td>
+      <td><div class="lt-actions">
+        ${c.rewards_available>0?`<button class="btn btn-success btn-xs" onclick="ltRedeem('${c.phone}')"><i class="fa-solid fa-gift"></i> Resgatar</button>`:''}
+        <button class="btn btn-ghost btn-xs" title="Remover um carimbo" onclick="ltAdjust('${c.phone}',-1)"><i class="fa-solid fa-minus"></i></button>
+        <button class="btn btn-ghost btn-xs" title="Dar um carimbo" onclick="ltAdjust('${c.phone}',1)"><i class="fa-solid fa-plus"></i></button>
+      </div></td></tr>`;}).join('')}</tbody></table>`;
+}
+async function ltAdjust(phone,delta){
+  const{error}=await sb.rpc('loyalty_adjust',{p_phone:phone,p_delta:delta});
+  if(error){toast('Erro: '+error.message,'err');return;}
+  await loadLoyalty(); renderLoyalty();
+  toast(delta>0?'Carimbo adicionado.':'Carimbo removido.','ok');
+}
+function ltRedeem(phone){
+  const c=loyaltyCards.find(x=>x.phone===phone); if(!c)return;
+  document.getElementById('conf-ico').innerHTML='<i class="fa-solid fa-gift" style="color:var(--grn);font-size:2.8rem"></i>';
+  document.getElementById('conf-title').textContent='Resgatar prêmio?';
+  document.getElementById('conf-msg').textContent=`${c.customer_name||fmtPhone(c.phone)} recebe: ${settings.loyalty_reward||'o prêmio'}.`;
+  const ok=document.getElementById('conf-ok'); ok.className='btn btn-success'; ok.textContent='Resgatar';
+  ok.onclick=async()=>{
+    closeOv('confirm');
+    const{error}=await sb.rpc('loyalty_redeem',{p_phone:phone});
+    if(error){toast('Erro: '+error.message,'err');return;}
+    await loadLoyalty(); renderLoyalty(); toast('Prêmio resgatado!','ok');
+  };
+  document.getElementById('ov-confirm').classList.add('open');
+}
+
 /* ═══ SETTINGS ═══ */
 function applySettingsForm(){
   if(!settings)return;
@@ -1592,6 +1875,10 @@ function applySettingsForm(){
   document.getElementById('fc-sw').className='tsw'+(forceClosed?' on':'');
   const days=settings.open_days||[1,2,3,4,5,6];
   document.querySelectorAll('.dchk').forEach(el=>el.className='dchk'+(days.includes(parseInt(el.dataset.d))?' on':''));
+  document.getElementById('st-pix-type').value=settings.pix_key_type||'';
+  document.getElementById('st-pix-key').value=settings.pix_key||'';
+  document.getElementById('st-pix-name').value=settings.pix_receiver||'';
+  applyLoyaltyForm();
 }
 function toggleDay(el){el.className=el.className.includes('on')?'dchk':'dchk on';}
 function toggleFC(){forceClosed=!forceClosed;document.getElementById('fc-sw').className='tsw'+(forceClosed?' on':'');}
@@ -1620,6 +1907,7 @@ async function saveSettings(){
     delivery_fee_free_default:feeDefaultFree,
     delivery_free_zones:document.getElementById('st-free-zones').value.split(/[,\n]/).map(z=>z.trim()).filter(Boolean).join(', '),
     delivery_paid_zones:document.getElementById('st-paid-zones').value.split(/[,\n]/).map(z=>z.trim()).filter(Boolean).join(', '),
+    pix_key_type:document.getElementById('st-pix-type').value,pix_key:document.getElementById('st-pix-key').value.trim(),pix_receiver:document.getElementById('st-pix-name').value.trim(),
     updated_at:new Date().toISOString()};
   const{error}=await sb.from('store_settings').upsert({id:1,...payload});
   if(error){toast('Erro: '+error.message,'err');return;}
@@ -1632,7 +1920,8 @@ function toggleSW(swId,varName){
   if(varName==='bfActive')   bfActive=!bfActive;
   if(varName==='feeEnabled'){ feeEnabled=!feeEnabled; document.getElementById('fee-fields').style.display=feeEnabled?'flex':'none'; }
   if(varName==='feeDefaultFree') feeDefaultFree=!feeDefaultFree;
-  const val = varName==='pfActive'?pfActive : varName==='bfActive'?bfActive : varName==='feeEnabled'?feeEnabled : feeDefaultFree;
+  if(varName==='ltEnabled') ltEnabled=!ltEnabled;
+  const val = varName==='pfActive'?pfActive : varName==='bfActive'?bfActive : varName==='feeEnabled'?feeEnabled : varName==='ltEnabled'?ltEnabled : feeDefaultFree;
   document.getElementById(swId).className='tsw'+(val?' on':'');
 }
 
@@ -1640,6 +1929,10 @@ function toggleSW(swId,varName){
 function closeOv(name,e){
   if(e&&e.target!==document.getElementById('ov-'+name))return;
   document.getElementById('ov-'+name).classList.remove('open');
+  if(name==='confirm'){
+    document.getElementById('conf-title').textContent='Confirmar?';
+    const ok=document.getElementById('conf-ok'); ok.className='btn btn-danger'; ok.textContent='Confirmar';
+  }
 }
 
 /* ═══ TOAST ═══ */
