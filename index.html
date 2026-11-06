@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin · Panificadora </title>
+<title>Admin · </title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -446,13 +446,13 @@ a{text-decoration:none;color:inherit}
     <div class="lcard-top">
       <div class="llogo"><i class="fa-solid fa-wheat-awn" style="color:#fff"></i></div>
       <h1>Painel Admin</h1>
-      <p>Panificadora</p>
+      <p>GTM CONVENIÊNCIA</p>
     </div>
     <input type="email"    class="linput" id="l-email" placeholder="E-mail" autocomplete="username">
     <input type="password" class="linput" id="l-pass"  placeholder="Senha"  autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     <div class="lerr" id="lerr">E-mail ou senha incorretos.</div>
     <button class="lbtn" onclick="login()">Entrar no Painel</button>
-    <p class="lhint">Use as credenciais criadas em<br><strong>Authentication → Users</strong> no Supabase</p>
+    <p class="lhint"><br><strong></strong></p>
   </div>
 </div>
 
@@ -482,7 +482,7 @@ a{text-decoration:none;color:inherit}
       <div class="nav-label" style="margin-top:6px">Loja</div>
       <button class="nav-item" onclick="go('loyalty',this)"><span class="nav-ico"><i class="fa-solid fa-gift"></i></span> Fidelidade</button>
       <button class="nav-item" onclick="go('coupons',this)"><span class="nav-ico"><i class="fa-solid fa-ticket"></i></span> Cupons</button>
-      <button class="nav-item" onclick="go('fornadas',this)"><span class="nav-ico"><i class="fa-solid fa-bread-slice"></i></span> Fornadas</button>
+      <button class="nav-item" onclick="go('fornadas',this)"><span class="nav-ico"><i class="fa-solid fa-fire"></i></span> Promoção</button>
       <button class="nav-item" onclick="go('reviews',this)"><span class="nav-ico"><i class="fa-solid fa-star"></i></span> Avaliações</button>
       <button class="nav-item" onclick="go('settings',this)"><span class="nav-ico"><i class="fa-solid fa-gear"></i></span> Configurações</button>
       <button class="nav-item" onclick="window.open('https://dcrmacedo.github.io/teste/','_blank')"><span class="nav-ico"><i class="fa-solid fa-globe"></i></span> Ver Loja</button>
@@ -637,7 +637,7 @@ a{text-decoration:none;color:inherit}
         <div class="card-hdr"><h3><i class="fa-solid fa-ticket"></i> Cupons de desconto</h3><button class="btn btn-primary btn-sm" onclick="openCp(null)"><i class="fa-solid fa-plus"></i> Novo cupom</button></div>
         <div class="card-body" id="cp-list" style="overflow-x:auto"></div></div></div>
       <div class="view" id="view-fornadas"><div class="card">
-        <div class="card-hdr"><h3><i class="fa-solid fa-bread-slice"></i> Fornadas</h3><button class="btn btn-primary btn-sm" onclick="openFn(null)"><i class="fa-solid fa-plus"></i> Nova fornada</button></div>
+        <div class="card-hdr"><h3><i class="fa-solid fa-fire"></i> Promoção</h3><button class="btn btn-primary btn-sm" onclick="openFn(null)"><i class="fa-solid fa-plus"></i> Nova promoção</button></div>
         <div class="card-body" id="fn-list" style="overflow-x:auto"></div></div></div>
       <div class="view" id="view-reviews">
         <div class="stats" id="rv-stats"></div>
@@ -915,9 +915,9 @@ a{text-decoration:none;color:inherit}
 </div>
 <div class="ov" id="ov-fn" onclick="closeOv('fn',event)">
   <div class="panel" style="max-width:420px">
-    <div class="panel-hdr"><h3 id="fn-title">Nova fornada</h3><button class="btn btn-ghost btn-sm" onclick="closeOv('fn')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="panel-hdr"><h3 id="fn-title">Nova promoção</h3><button class="btn btn-ghost btn-sm" onclick="closeOv('fn')"><i class="fa-solid fa-xmark"></i></button></div>
     <div class="panel-body">
-      <div class="fg"><label>O que sai *</label><input id="fn-name" placeholder="Pão francês"></div>
+      <div class="fg"><label>Promoção *</label><input id="fn-name" placeholder="Ex: Cerveja gelada em dobro"></div>
       <div class="g2">
         <div class="fg"><label>Horário *</label><input type="time" id="fn-time"></div>
         <div class="fg"><label>Dias</label><select id="fn-days"><option value="all">Todos os dias</option><option value="wk">Segunda a sexta</option><option value="sat">Segunda a sábado</option><option value="we">Fim de semana</option></select></div>
@@ -1250,7 +1250,7 @@ function subscribeRealtime(){
 function startClock(){const t=()=>document.getElementById('clock').textContent=new Date().toLocaleTimeString('pt-BR');t();setInterval(t,1000);}
 
 /* ═══ NAV ═══ */
-const pageTitles={dashboard:'Dashboard',orders:'Pedidos',products:'Produtos',categories:'Categorias',banners:'Banners & Promoções',loyalty:'Cartão Fidelidade',coupons:'Cupons',fornadas:'Fornadas',reviews:'Avaliações',settings:'Configurações da Loja'};
+const pageTitles={dashboard:'Dashboard',orders:'Pedidos',products:'Produtos',categories:'Categorias',banners:'Banners & Promoções',loyalty:'Cartão Fidelidade',coupons:'Cupons',fornadas:'Promoção',reviews:'Avaliações',settings:'Configurações da Loja'};
 function go(view,btn){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
   document.getElementById('view-'+view).classList.add('on');
@@ -1265,7 +1265,7 @@ function go(view,btn){
     'categories':{icon:'fa-plus',        label:'Nova Categoria',       fn:"openCatForm(null)"},
     'banners':   {icon:'fa-plus',        label:'Novo Banner',          fn:"openBannerForm(null)"},
     'coupons':   {icon:'fa-plus',        label:'Novo cupom',           fn:'openCp(null)'},
-    'fornadas':  {icon:'fa-plus',        label:'Nova fornada',         fn:'openFn(null)'},
+    'fornadas':  {icon:'fa-plus',        label:'Nova promoção',        fn:'openFn(null)'},
     'reviews':   {icon:'fa-rotate-right',label:'Atualizar',            fn:'loadExtras().then(renderExtras)'},
     'loyalty':   {icon:'fa-floppy-disk', label:'Salvar regra',         fn:'saveLoyalty()'},
     'orders':    {icon:'fa-rotate-right',label:'Atualizar',            fn:"loadOrders().then(()=>{renderOrders();renderDashboard();})"},
@@ -1741,7 +1741,7 @@ function renderExtras(){
   document.getElementById('cp-list').innerHTML=!coupons.length?emptyBox('fa-ticket','Nenhum cupom criado.'):`<table class="tbl"><thead><tr><th>Código</th><th>Desconto</th><th>Pedido mín.</th><th>Usos</th><th>Validade</th><th>Situação</th><th></th></tr></thead><tbody>${coupons.map(c=>{
     const exp=c.expires_at&&c.expires_at<new Date().toISOString().slice(0,10), esg=c.max_uses&&c.uses>=c.max_uses;
     return `<tr><td style="font-weight:700;color:var(--car-l)">${esc(c.code)}</td><td>${c.type==='percent'?c.value+'%':fp(c.value)}</td><td>${c.min_order>0?fp(c.min_order):'—'}</td><td>${c.uses}${c.max_uses?'/'+c.max_uses:''}</td><td>${dmy(c.expires_at)}</td><td>${exp?pill('Vencido',0):esg?pill('Esgotado',0):c.active?pill('Ativo',1):pill('Inativo',0)}</td><td>${rowBtns(`openCp(${c.id})`,'coupons',c.id,esc(c.code))}</td></tr>`;}).join('')}</tbody></table>`;
-  document.getElementById('fn-list').innerHTML=!fornadas.length?emptyBox('fa-bread-slice','Nenhuma fornada cadastrada.'):`<table class="tbl"><thead><tr><th>Horário</th><th>O que sai</th><th>Dias</th><th>Situação</th><th></th></tr></thead><tbody>${fornadas.map(f=>`<tr><td style="font-weight:700;color:var(--car-l)">${esc(String(f.time_at).slice(0,5))}</td><td><div style="font-weight:600;color:var(--txt)">${esc(f.name)}</div>${f.note?`<div style="font-size:.72rem;color:var(--txt3)">${esc(f.note)}</div>`:''}</td><td>${esc(f.days_label||'')}</td><td>${f.active?pill('Ativa',1):pill('Pausada',0)}</td><td>${rowBtns(`openFn(${f.id})`,'fornadas',f.id,esc(f.name))}</td></tr>`).join('')}</tbody></table>`;
+  document.getElementById('fn-list').innerHTML=!fornadas.length?emptyBox('fa-fire','Nenhuma promoção cadastrada.'):`<table class="tbl"><thead><tr><th>Horário</th><th>Promoção</th><th>Dias</th><th>Situação</th><th></th></tr></thead><tbody>${fornadas.map(f=>`<tr><td style="font-weight:700;color:var(--car-l)">${esc(String(f.time_at).slice(0,5))}</td><td><div style="font-weight:600;color:var(--txt)">${esc(f.name)}</div>${f.note?`<div style="font-size:.72rem;color:var(--txt3)">${esc(f.note)}</div>`:''}</td><td>${esc(f.days_label||'')}</td><td>${f.active?pill('Ativa',1):pill('Pausada',0)}</td><td>${rowBtns(`openFn(${f.id})`,'fornadas',f.id,esc(f.name))}</td></tr>`).join('')}</tbody></table>`;
   const pub=reviews.filter(r=>r.approved), avg=pub.length?(pub.reduce((a,r)=>a+r.rating,0)/pub.length).toFixed(1).replace('.',','):'—', pend=reviews.filter(r=>!r.approved).length;
   const st=(ic,cl,v,l)=>`<div class="stat" style="cursor:default"><div class="stat-top"><div class="stat-ico ${cl}"><i class="fa-solid ${ic}"></i></div></div><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`;
   document.getElementById('rv-stats').innerHTML=st('fa-star','ic-y',avg,'Nota média (publicadas)')+st('fa-eye','ic-g',pub.length,'Publicadas')+st('fa-hourglass-half','ic-o',pend,'Aguardando aprovação')+st('fa-comments','ic-b',reviews.length,'Total');
@@ -1785,18 +1785,18 @@ async function saveCp(){
 }
 function openFn(id){
   editFnId=id;const f=fornadas.find(x=>x.id===id)||{};
-  $v('fn-title').textContent=id?'Editar fornada':'Nova fornada';
+  $v('fn-title').textContent=id?'Editar promoção':'Nova promoção';
   $v('fn-name').value=f.name||'';$v('fn-time').value=f.time_at?String(f.time_at).slice(0,5):'';
   $v('fn-days').value=Object.keys(DAYLBL).find(k=>DAYLBL[k]===f.days_label)||'all';
   $v('fn-note').value=f.note||'';$v('fn-active').value=f.active===false?'0':'1';$v('ov-fn').classList.add('open');
 }
 async function saveFn(){
   const name=$v('fn-name').value.trim(),time_at=$v('fn-time').value,k=$v('fn-days').value;
-  if(!name||!time_at){toast('Informe o que sai e o horário.','err');return;}
+  if(!name||!time_at){toast('Informe a promoção e o horário.','err');return;}
   const p={name,time_at,days:DAYSET[k],days_label:DAYLBL[k],note:$v('fn-note').value.trim(),active:$v('fn-active').value==='1'};
   const{error}=editFnId?await sb.from('fornadas').update(p).eq('id',editFnId):await sb.from('fornadas').insert(p);
   if(error){toast('Erro: '+error.message,'err');return;}
-  closeOv('fn');await loadExtras();renderExtras();toast('Fornada salva!','ok');
+  closeOv('fn');await loadExtras();renderExtras();toast('Promoção salva!','ok');
 }
 
 /* ═══ FIDELIDADE ═══ */
@@ -1857,6 +1857,7 @@ function renderLoyalty(){
         ${c.rewards_available>0?`<button class="btn btn-success btn-xs" onclick="ltRedeem('${c.phone}')"><i class="fa-solid fa-gift"></i> Resgatar</button>`:''}
         <button class="btn btn-ghost btn-xs" title="Remover um carimbo" onclick="ltAdjust('${c.phone}',-1)"><i class="fa-solid fa-minus"></i></button>
         <button class="btn btn-ghost btn-xs" title="Dar um carimbo" onclick="ltAdjust('${c.phone}',1)"><i class="fa-solid fa-plus"></i></button>
+        <button class="btn btn-danger btn-xs" title="Excluir cliente do programa" onclick="ltDelete('${c.phone}')"><i class="fa-solid fa-trash"></i></button>
       </div></td></tr>`;}).join('')}</tbody></table>`;
 }
 async function ltAdjust(phone,delta){
@@ -1876,6 +1877,21 @@ function ltRedeem(phone){
     const{error}=await sb.rpc('loyalty_redeem',{p_phone:phone});
     if(error){toast('Erro: '+error.message,'err');return;}
     await loadLoyalty(); renderLoyalty(); toast('Prêmio resgatado!','ok');
+  };
+  document.getElementById('ov-confirm').classList.add('open');
+}
+
+function ltDelete(phone){
+  const c=loyaltyCards.find(x=>x.phone===phone); if(!c)return;
+  document.getElementById('conf-ico').innerHTML='<i class="fa-solid fa-triangle-exclamation" style="color:var(--red);font-size:2.8rem"></i>';
+  document.getElementById('conf-title').textContent='Excluir cliente do programa?';
+  document.getElementById('conf-msg').textContent=`${c.customer_name||fmtPhone(c.phone)} será removido da fidelidade, com ${c.stamps||0} carimbo(s) e ${c.rewards_available||0} prêmio(s) a resgatar. Não dá para desfazer.`;
+  const ok=document.getElementById('conf-ok'); ok.className='btn btn-danger'; ok.textContent='Excluir';
+  ok.onclick=async()=>{
+    closeOv('confirm');
+    const{error}=await sb.from('loyalty_cards').delete().eq('phone',phone);
+    if(error){toast('Erro: '+error.message,'err');return;}
+    await loadLoyalty(); renderLoyalty(); toast('Cliente excluído do programa.','info');
   };
   document.getElementById('ov-confirm').classList.add('open');
 }
