@@ -41,11 +41,11 @@ a{text-decoration:none;color:inherit}
 .lhint{font-size:.73rem;color:var(--txt4);text-align:center;margin-top:20px;line-height:1.6}
 
 /* ════ APP SHELL ════ */
-#app{height:100vh;display:none;flex-direction:row}
+#app{height:100vh;height:100dvh;display:none;flex-direction:row}
 #app.show{display:flex}
 
 /* ════ SIDEBAR ════ */
-.sb{width:234px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--brd);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.sb{width:234px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--brd);display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
 .sb-top{padding:20px 16px 14px;border-bottom:1px solid var(--brd)}
 .sb-brand{display:flex;align-items:center;gap:10px}
 .sb-ico{width:36px;height:36px;background:var(--car);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
@@ -59,6 +59,9 @@ a{text-decoration:none;color:inherit}
 .nav-ico{font-size:.95rem;flex-shrink:0;width:18px;text-align:center}
 .nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.62rem;font-weight:800;padding:1px 7px;border-radius:20px;min-width:20px;text-align:center;animation:badge-pulse 2s infinite}
 @keyframes badge-pulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.4)}50%{box-shadow:0 0 0 5px rgba(231,76,60,0)}}
+/* Botão "Sair" dentro do menu: só aparece em tablet/celular */
+.nav-logout{display:none;margin-top:10px;color:var(--red)}
+.nav-logout:hover{background:var(--red-l);color:var(--red)}
 .sb-foot{border-top:1px solid var(--brd);padding:10px 10px}
 .sb-user{display:flex;align-items:center;gap:9px;padding:8px 8px;border-radius:var(--rad)}
 .sb-av{width:30px;height:30px;background:var(--car);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
@@ -69,7 +72,7 @@ a{text-decoration:none;color:inherit}
 .btn-out:hover{color:var(--red)}
 
 /* ════ CONTENT ════ */
-.content{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.content{flex:1;display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
 .c-hdr{background:var(--s1);border-bottom:1px solid var(--brd);padding:0 24px;height:57px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .c-hdr h2{font-size:1.05rem;font-weight:600;color:var(--txt)}
 .c-hdr-r{display:flex;align-items:center;gap:14px}
@@ -307,6 +310,9 @@ a{text-decoration:none;color:inherit}
   .nav-item span:not(.nav-ico):not(.nav-badge){display:none}
   .sb-user{justify-content:center;padding:8px 4px}
 
+  /* Botão Sair no menu (o do rodapé fica escondido nesta largura) */
+  .nav-logout{display:flex}
+
   /* Stats: 2 columns */
   .stats{grid-template-columns:repeat(2,1fr)}
   .sg{grid-template-columns:1fr}
@@ -337,10 +343,13 @@ a{text-decoration:none;color:inherit}
   .nav-item span:not(.nav-ico):not(.nav-badge){display:inline}
   .sb-user{justify-content:flex-start;padding:8px 8px}
   .sb-toggle{display:flex;align-items:center;justify-content:center}
+  /* Rodapé (usuário + sair) sempre visível acima da barra do navegador */
+  .sb-foot{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .btn-out{font-size:1.15rem;padding:8px 10px}
 
   /* App shell no longer side-by-side */
   #app{flex-direction:column}
-  .content{height:100vh;width:100%}
+  .content{height:100vh;height:100dvh;width:100%}
 
   /* Top header: show toggle, shrink clock */
   .c-hdr{padding:0 12px;gap:10px}
@@ -486,6 +495,7 @@ a{text-decoration:none;color:inherit}
       <button class="nav-item" onclick="go('reviews',this)"><span class="nav-ico"><i class="fa-solid fa-star"></i></span> Avaliações</button>
       <button class="nav-item" onclick="go('settings',this)"><span class="nav-ico"><i class="fa-solid fa-gear"></i></span> Configurações</button>
       <button class="nav-item" onclick="window.open('https://dcrmacedo.github.io/teste/','_blank')"><span class="nav-ico"><i class="fa-solid fa-globe"></i></span> Ver Loja</button>
+      <button class="nav-item nav-logout" onclick="logout()"><span class="nav-ico"><i class="fa-solid fa-right-from-bracket"></i></span> Sair da conta</button>
     </nav>
     <div class="sb-foot">
       <div class="sb-user">
